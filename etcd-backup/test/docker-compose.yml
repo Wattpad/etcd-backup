@@ -1,0 +1,51 @@
+version: '2'
+services:
+  fakes3:
+    # fakes3 build: https://hub.docker.com/r/lphoward/fake-s3/builds/bfmxurmc7rtxmyx4ztsaffo/
+    image: lphoward/fake-s3@sha256:3cf05e268c19227ed748c2eced41cf8dca23a314d5d251574d2967d6fd5f9dff
+    command: -H s3.dev -r /fakes3_root -p 80
+    ports:
+      - 80:80
+    networks:
+      default:
+        aliases:
+          - s3.dev
+
+  etcd-source:
+    image: wattpad/etcd:latest
+    command: etcd
+    environment:
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_DATA_DIR=/var/lib/etcd
+    ports:
+      - 2379:2379
+    volumes:
+      - ./tmp/source:/var/lib/etcd
+
+  etcd-restored:
+    image: wattpad/etcd:latest
+    command: etcd
+    environment:
+      - ETCD_FORCE_NEW_CLUSTER=true
+      - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_DATA_DIR=/var/lib/etcd
+    ports:
+      - 12379:2379
+    volumes:
+      - ./tmp/restore:/var/lib/etcd
+
+  etcd-backup:
+    image: wattpad/etcd:latest
+    command: etcd-backup
+    volumes:
+      - ./tmp/source:/var/lib/etcd
+    environment:
+      - AWS_ACCESS_KEY_ID=123
+      - AWS_SECRET_ACCESS_KEY=abc
+      - ETCD_DATA_DIR=/var/lib/etcd
+      - S3_BUCKET=testbucket
+      - S3_ENDPOINT_URL=http://s3.dev
+      - S3_PREFIX=etcd/my-cluster/
+      - RUN_ONCE=true

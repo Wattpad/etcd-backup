@@ -1,0 +1,12 @@
+boto3==1.4.1
+botocore==1.4.78
+datadog==0.14.0
+decorator==4.0.10
+docutils==0.12
+futures==3.0.5
+jmespath==0.9.0
+python-dateutil==2.6.0
+requests==2.12.1
+s3transfer==0.1.9
+simplejson==3.10.0
+six==1.10.0
