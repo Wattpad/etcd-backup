@@ -17,3 +17,5 @@ RUN pip install -r /opt/etcd-backup/requirements.txt
 
 COPY /etcd-backup /opt/etcd-backup
 RUN ln -s /opt/etcd-backup/etcd-backup.py /usr/local/bin/etcd-backup
+
+CMD ["etcd"]
