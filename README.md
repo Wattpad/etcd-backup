@@ -14,6 +14,14 @@ etcd->S3 backup script
       etcd-backup
     ```
 
+See the `print_usage` method in [etcd-backup.py](etcd-backup.) for all available environment variables.
+
+## Leader Backups
+
+This script should be deployed on every peer of the etcd cluster (ie. no proxies) and it will ensure that
+backups only run on the current leader.  It will talk to the local etcd instance to determine if it is the
+leader.
+
 ## AWS Authentication
 
 The backup script uses boto3 under the hood, so any [authentication method](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials)
@@ -22,4 +30,4 @@ used by boto will work here, including environment variables and IAM instance pr
 ## Datadog support
 
 If you supply the appropraite environment variables, the backup script will send metrics to Datadog.  See the
-usage docs in [etcd-backup.py](etcd-backup/etcd-backup.py) for more information.
+usage docs for more information.

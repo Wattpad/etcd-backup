@@ -42,6 +42,7 @@ services:
     environment:
       - AWS_ACCESS_KEY_ID=123
       - AWS_SECRET_ACCESS_KEY=abc
+      - ETCD_CLIENT_URL=http://etcd-source:2379
       - ETCD_DATA_DIR=/var/lib/etcd
       - S3_BUCKET=testbucket
       - S3_ENDPOINT_URL=http://s3.dev

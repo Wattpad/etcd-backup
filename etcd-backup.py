@@ -7,6 +7,7 @@ import datetime
 import hashlib
 import logging
 import os
+import requests
 import subprocess
 import tarfile
 import time
@@ -31,10 +32,13 @@ def main():
     s3_bucket = get_required_env_var('S3_BUCKET')
     s3_prefix = get_required_env_var('S3_PREFIX')
     run_once = os.getenv("RUN_ONCE") == "true"
+    etcd_client_url = os.getenv("ETCD_CLIENT_URL", "http://localhost:2379")
 
     while True:
         logging.info("Starting etcd-backup, running backup every %s seconds.", backup_interval)
-        do_backup(data_dir, s3_bucket, s3_prefix)
+
+        if is_leader(etcd_client_url):
+            do_backup(data_dir, s3_bucket, s3_prefix)
 
         if run_once:
             logging.info("RUN_ONCE enabled, exiting.")
@@ -56,6 +60,7 @@ Required env vars:
 
 Optional env vars:
   BACKUP_INTERVAL_SEC: number of seconds to wait between backup runs (default: 60)
+  ETCD_CLIENT_URL: URL for reaching etcd to detect if we are talking to the master (default: http://localhost:2379)
   ETCD_DATA_DIR: etcd data directory  (default: /var/lib/etcd)
   LOG_LEVEL: as the name says (default: INFO)
   RUN_ONCE: if "true", run once and exit
@@ -103,6 +108,15 @@ def do_backup(data_dir, s3_bucket, s3_prefix):
             shutil.rmtree(backup_dir)
         if os.path.isfile(backup_file):
             os.remove(backup_file)
+
+
+def is_leader(etcd_client_url):
+    logging.debug("Checking local etcd peer state ...")
+    r = requests.get(url="%s/v2/stats/self" % etcd_client_url)
+    r.raise_for_status()
+    state = r.json()['state']
+    logging.debug("Peer state: %s" % state)
+    return state == 'StateLeader'
 
 
 def generate_backup(data_dir, backup_dir):
