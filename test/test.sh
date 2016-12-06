@@ -72,7 +72,10 @@ restore_data() {
   ) > $DEBUG_OUTPUT 2>&1
 
   log "Starting etcd-restored container ..."
-  docker-compose up -d etcd-restored > $DEBUG_OUTPUT 2>&1
+  (
+    docker-compose up -d etcd-restored
+    wait_for_endpoint "$ETCD_RESTORED_URL/health"
+  ) > $DEBUG_OUTPUT 2>&1
 }
 
 set_up() {
@@ -80,6 +83,8 @@ set_up() {
   (
     docker-compose up -d --force-recreate fakes3 etcd-source
     mkdir -p $BASE_DIR/source $BASE_DIR/restore
+    wait_for_endpoint "$FAKES3_URL"
+    wait_for_endpoint "$ETCD_SOURCE_URL/health"
   ) > $DEBUG_OUTPUT 2>&1
 }
 
@@ -108,6 +113,20 @@ handle_exit() {
     log "Error occured. return_code: $status"
     tear_down
   fi
+}
+
+wait_for_endpoint() {
+  endpoint=$1
+  log "Waiting for endpoint: $endpoint"
+  retries=10
+  until curl -s --fail "$endpoint" > $DEBUG_OUTPUT 2>&1 ; do
+    retries=$(($retries - 1))
+    if [ $retries -eq 0 ]; then
+      log "Timed out waiting for endpoint: $endpoint"
+      exit 1
+    fi
+    sleep 1;
+  done
 }
 
 main
