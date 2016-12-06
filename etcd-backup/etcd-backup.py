@@ -10,6 +10,7 @@ import os
 import subprocess
 import tarfile
 import time
+import shutil
 import signal
 import sys
 
@@ -81,22 +82,27 @@ def do_backup(data_dir, s3_bucket, s3_prefix):
     retries = S3_UPLOAD_MAX_RETRIES
     delay = S3_UPLOAD_RETRY_INITIAL_DELAY_SEC
 
-    while True:
-        if should_shut_down:
-            break
-
-        try:
-            upload_file(s3_bucket, s3_key, backup_file)
-            submit_metrics(s3_bucket, s3_prefix, os.path.getsize(backup_file))
-            break
-        except Exception as e:
-            logging.error("Error uploading to S3: %s" % e.message)
-            retries -= 1
-            if retries == 0:
-                raise e
-            logging.error("Retrying upload in %s seconds" % delay)
-            time.sleep(delay)
-            delay *= 2
+    try:
+        while True:
+            if should_shut_down:
+                break
+            try:
+                upload_file(s3_bucket, s3_key, backup_file)
+                submit_metrics(s3_bucket, s3_prefix, os.path.getsize(backup_file))
+                break
+            except Exception as e:
+                logging.error("Error uploading to S3: %s" % e.message)
+                retries -= 1
+                if retries == 0:
+                    raise e
+                logging.error("Retrying upload in %s seconds" % delay)
+                time.sleep(delay)
+                delay *= 2
+    finally:
+        if os.path.isdir(backup_dir):
+            shutil.rmtree(backup_dir)
+        if os.path.isfile(backup_file):
+            os.remove(backup_file)
 
 
 def generate_backup(data_dir, backup_dir):
