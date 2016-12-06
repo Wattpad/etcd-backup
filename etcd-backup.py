@@ -67,11 +67,11 @@ Optional env vars:
 
 Datadog support:
 
-    If these keys are set, we will send metrics to Datadog.
+    If these keys are set, we will send metrics to dogstatsd.
     See the submit_metrics method.
 
-    DATADOG_API_KEY: Datadog API key (default: "")
-    DATADOG_APPLICATION_KEY: Datadog Application key (default: "")
+    DOGSTATSD_HOST: Host where dogstatsd is listening (default: "")
+    DOGSTATSD_PORT: Port where dogstatsd is listening (default: 8125)
 """ % (sys.argv[0])
     print(message)
 
@@ -153,17 +153,16 @@ def get_file_md5_sum(file_path):
 
 
 def submit_metrics(bucket, prefix, file_size_bytes):
-    api_key = os.getenv('DATADOG_API_KEY')
-    app_key = os.getenv('DATADOG_APPLICATION_KEY')
+    host = os.getenv('DOGSTATSD_HOST')
+    port = os.getenv('DOGSTATSD_PORT', 8125)
 
-    if api_key and app_key:
-        datadog.initialize(api_key=api_key, app_key=app_key)
-        datadog.api.Metric.send(metric='etcd_backup.s3_upload.bytes',
-                                points=file_size_bytes,
-                                host="",
-                                tags=['bucket:%s' % bucket, 'prefix:%s' % prefix])
+    if host:
+        statsd = datadog.dogstatsd.DogStatsd(host=host, port=port)
+        statsd.increment(metric='etcd_backup.s3_upload.bytes',
+                         value=file_size_bytes,
+                         tags=['bucket:%s' % bucket, 'prefix:%s' % prefix])
     else:
-        logging.debug("Not submitting Datadog metric: DATADOG_API_KEY and DATADOG_APPLICATION_KEY not set.")
+        logging.debug("Not submitting Datadog metric: env vars not set.")
 
 
 def get_required_env_var(var):
