@@ -1,22 +1,8 @@
 # docker-etcd
 
-etcd image with S3 backup script
+etcd->S3 backup script
 
 ## Usage
-
-    ```shell
-    docker run \
-      -e ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380 \
-      -e ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379 \
-      -e ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379 \
-      # ... other env vars
-      -v <YOUR_ETCD_DATA_DIR>:/var/lib/etcd \
-      -p 2379:2379 \
-      -p 2380:2380 \
-      wattpad/etcd
-    ```
-
-### etcd-backup
 
     ```shell
     docker run \
@@ -24,7 +10,7 @@ etcd image with S3 backup script
       -e ETCD_BACKUP_S3_PREFIX=myprefix \
       -e ETCD_BACKUP_INTERVAL_SEC=600 \
       -v <YOUR_ETCD_DATA_DIR>:/var/lib/etcd \
-      wattpad/etcd \
+      wattpad/etcd:<VERSION> \
       etcd-backup
     ```
 
