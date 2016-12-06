@@ -12,8 +12,7 @@ services:
           - s3.dev
 
   etcd-source:
-    image: wattpad/etcd:latest
-    command: etcd
+    image: quay.io/coreos/etcd:v${ETCD_VERSION}
     environment:
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
@@ -24,8 +23,7 @@ services:
       - ./tmp/source:/var/lib/etcd
 
   etcd-restored:
-    image: wattpad/etcd:latest
-    command: etcd
+    image: quay.io/coreos/etcd:v${ETCD_VERSION}
     environment:
       - ETCD_FORCE_NEW_CLUSTER=true
       - ETCD_ADVERTISE_CLIENT_URLS=http://0.0.0.0:2379

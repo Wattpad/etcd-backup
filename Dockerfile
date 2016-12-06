@@ -5,7 +5,7 @@ ENV ETCD_BUILD="etcd-v${ETCD_VERSION}-linux-amd64"
 
 RUN apk --no-cache --virtual build-deps add openssl && \
     wget "https://github.com/coreos/etcd/releases/download/v${ETCD_VERSION}/${ETCD_BUILD}.tar.gz" -O - | \
-    tar xzvf - -C /tmp ${ETCD_BUILD}/etcdctl ${ETCD_BUILD}/etcd && \
+    tar xzvf - -C /tmp ${ETCD_BUILD}/etcdctl && \
     mv /tmp/${ETCD_BUILD}/* /usr/local/bin && \
     rmdir /tmp/${ETCD_BUILD} && \
     apk del build-deps

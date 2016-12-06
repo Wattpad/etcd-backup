@@ -20,4 +20,4 @@ push: build
 	docker push $(IMAGE)
 
 test: build
-	cd test && ./test.sh
+	cd test && ETCD_VERSION=$(ETCD_VERSION) ./test.sh
