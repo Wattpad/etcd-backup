@@ -7,4 +7,7 @@ before_install:
   - sudo pip install awscli
 
 script:
+  # We use sudo because the test results in files created by the root user from
+  # inside the containers, so we need root access to be able to clean up at
+  # the end of the tests.
   - sudo make test
