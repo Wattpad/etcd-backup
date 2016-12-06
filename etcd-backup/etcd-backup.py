@@ -106,14 +106,12 @@ def generate_backup(data_dir, backup_dir):
     except subprocess.CalledProcessError as e:
         logging.error("Error running etcdctl. Output: %s" % e.output)
         raise
-    return backup_dir
 
 
 def compress_files(source_dir, file_path):
     logging.debug("Compressing backup directory %s into tarball %s" % (source_dir, file_path))
     with tarfile.open(name=file_path, mode="w:gz") as tar:
         tar.add(source_dir, arcname='/')
-    return file_path
 
 
 def upload_file(bucket, key, file_path):
