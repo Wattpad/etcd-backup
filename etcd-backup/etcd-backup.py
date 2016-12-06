@@ -39,6 +39,8 @@ def main():
         if run_once:
             logging.info("RUN_ONCE enabled, exiting.")
             break
+
+        # We want to exit before sleeping, so we check this here, not as the loop condition
         if should_shut_down:
             break
         time.sleep(backup_interval)
@@ -83,9 +85,7 @@ def do_backup(data_dir, s3_bucket, s3_prefix):
     delay = S3_UPLOAD_RETRY_INITIAL_DELAY_SEC
 
     try:
-        while True:
-            if should_shut_down:
-                break
+        while not should_shut_down:
             try:
                 upload_file(s3_bucket, s3_key, backup_file)
                 submit_metrics(s3_bucket, s3_prefix, os.path.getsize(backup_file))
