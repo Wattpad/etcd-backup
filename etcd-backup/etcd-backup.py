@@ -59,13 +59,6 @@ Optional env vars:
 
 Datadog support:
 
-def get_required_env_var(var):
-    value = os.getenv(var)
-    if value is None:
-        logging.error('Missing required env var: %s' % var)
-        print_usage()
-        sys.exit(1)
-    return value
     If these keys are set, we will send metrics to Datadog.
     See the submit_metrics method.
 
@@ -151,6 +144,15 @@ def submit_metrics(bucket, prefix, file_size_bytes):
                                 tags=['bucket:%s' % bucket, 'prefix:%s' % prefix])
     else:
         logging.debug("Not submitting Datadog metric: DATADOG_API_KEY and DATADOG_APPLICATION_KEY not set.")
+
+
+def get_required_env_var(var):
+    value = os.getenv(var)
+    if value is None:
+        logging.error('Missing required env var: %s' % var)
+        print_usage()
+        sys.exit(1)
+    return value
 
 
 if __name__ == '__main__':
