@@ -20,4 +20,4 @@ push: build
 	docker push $(IMAGE)
 
 test: build
-	cd etcd-backup/test && ./test.sh
+	cd test && ./test.sh
