@@ -52,8 +52,9 @@ Required env vars:
   S3_PREFIX: S3 prefix added to S3 object (useful for backup up multiple clusters into the same bucket)
 
 Optional env vars:
-  ETCD_DATA_DIR: etcd data directory  (default: /var/lib/etcd)
   BACKUP_INTERVAL_SEC: number of seconds to wait between backup runs (default: 60)
+  ETCD_DATA_DIR: etcd data directory  (default: /var/lib/etcd)
+  LOG_LEVEL: as the name says (default: INFO)
   RUN_ONCE: if "true", run once and exit
 
 Datadog support:
