@@ -12,12 +12,13 @@ RUN apk --no-cache --virtual build-deps add openssl && \
 
 RUN apk --no-cache add py-pip
 
+ENV ETCD_DATA_DIR=/var/lib/etcd
+
+# Copy requirements.txt separately so pip install step can be cached
 COPY /etcd-backup/requirements.txt /opt/etcd-backup/requirements.txt
 RUN pip install -r /opt/etcd-backup/requirements.txt
 
 COPY /etcd-backup /opt/etcd-backup
 RUN ln -s /opt/etcd-backup/etcd-backup.py /usr/local/bin/etcd-backup
-
-ENV ETCD_DATA_DIR=/var/lib/etcd
 
 CMD ["etcd"]
