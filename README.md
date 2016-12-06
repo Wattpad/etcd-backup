@@ -28,7 +28,12 @@ etcd image with S3 backup script
       etcd-backup
     ```
 
-#### AWS Authentication
+## AWS Authentication
 
 The backup script uses boto3 under the hood, so any [authentication method](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials)
 used by boto will work here, including environment variables and IAM instance profiles.
+
+## Datadog support
+
+If you supply the appropraite environment variables, the backup script will send metrics to Datadog.  See the
+usage docs in [etcd-backup.py](etcd-backup/etcd-backup.py) for more information.

@@ -55,9 +55,8 @@ Optional env vars:
   ETCD_DATA_DIR: etcd data directory  (default: /var/lib/etcd)
   BACKUP_INTERVAL_SEC: number of seconds to wait between backup runs (default: 60)
   RUN_ONCE: if "true", run once and exit
-""" % (sys.argv[0])
-    print(message)
 
+Datadog support:
 
 def get_required_env_var(var):
     value = os.getenv(var)
@@ -66,6 +65,13 @@ def get_required_env_var(var):
         print_usage()
         sys.exit(1)
     return value
+    If these keys are set, we will send metrics to Datadog.
+    See the submit_metrics method.
+
+    DATADOG_API_KEY: Datadog API key (default: "")
+    DATADOG_APPLICATION_KEY: Datadog Application key (default: "")
+""" % (sys.argv[0])
+    print(message)
 
 
 def do_backup(data_dir, s3_bucket, s3_prefix):
