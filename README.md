@@ -1,4 +1,4 @@
-# docker-etcd
+# etcd-backup
 
 etcd->S3 backup script
 
