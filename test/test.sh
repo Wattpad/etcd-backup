@@ -47,6 +47,7 @@ run_tests() {
     log "Backup and restore contents did not match!"
     log "Expected: $expected"
     log "Actual: $actual"
+    exit 1
   else
     log "Tests passed!"
   fi
