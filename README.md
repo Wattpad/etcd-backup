@@ -10,11 +10,11 @@ etcd->S3 backup script
       -e ETCD_BACKUP_S3_PREFIX=myprefix \
       -e ETCD_BACKUP_INTERVAL_SEC=600 \
       -v <YOUR_ETCD_DATA_DIR>:/var/lib/etcd \
-      wattpad/etcd:<VERSION> \
+      wattpad/etcd-backup:<VERSION> \
       etcd-backup
     ```
 
-See the `print_usage` method in [etcd-backup.py](etcd-backup.) for all available environment variables.
+See the `print_usage` method in [etcd-backup.py](etcd-backup.py) for all available environment variables.
 
 ## Leader Backups
 

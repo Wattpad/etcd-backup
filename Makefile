@@ -1,6 +1,6 @@
 .PHONY: build push run test
 
-REPO=wattpad/etcd
+REPO=wattpad/etcd-backup
 ETCD_VERSION=2.3.7
 
 BUILD_VERSION=build-$(shell git rev-parse --short HEAD)
