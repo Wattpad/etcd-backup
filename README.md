@@ -6,9 +6,9 @@ etcd->S3 backup script
 
     ```shell
     docker run \
-      -e ETCD_BACKUP_S3_BUCKET=mybucket \
-      -e ETCD_BACKUP_S3_PREFIX=myprefix \
-      -e ETCD_BACKUP_INTERVAL_SEC=600 \
+      -e S3_BUCKET=mybucket \
+      -e S3_PREFIX=myprefix \
+      -e BACKUP_INTERVAL_SEC=600 \
       -v <YOUR_ETCD_DATA_DIR>:/var/lib/etcd \
       wattpad/etcd-backup:<VERSION> \
       etcd-backup
