@@ -26,30 +26,6 @@ S3_UPLOAD_RETRY_INITIAL_DELAY_SEC = 0.1
 should_shut_down = False
 
 
-def main():
-    data_dir = os.getenv('ETCD_DATA_DIR', '/var/lib/etcd')
-    backup_interval = int(os.getenv('BACKUP_INTERVAL_SEC', 60))
-    s3_bucket = get_required_env_var('S3_BUCKET')
-    s3_prefix = get_required_env_var('S3_PREFIX')
-    run_once = os.getenv("RUN_ONCE") == "true"
-    etcd_client_url = os.getenv("ETCD_CLIENT_URL", "http://localhost:2379")
-
-    while True:
-        logging.info("Starting etcd-backup, running backup every %s seconds.", backup_interval)
-
-        if is_leader(etcd_client_url):
-            do_backup(data_dir, s3_bucket, s3_prefix)
-
-        if run_once:
-            logging.info("RUN_ONCE enabled, exiting.")
-            break
-
-        # We want to exit before sleeping, so we check this here, not as the loop condition
-        if should_shut_down:
-            break
-        time.sleep(backup_interval)
-
-
 def print_usage():
     message = """
 Usage: %s
@@ -74,6 +50,30 @@ Datadog support:
     DOGSTATSD_PORT: Port where dogstatsd is listening (default: 8125)
 """ % (sys.argv[0])
     print(message)
+
+
+def main():
+    data_dir = os.getenv('ETCD_DATA_DIR', '/var/lib/etcd')
+    backup_interval = int(os.getenv('BACKUP_INTERVAL_SEC', 60))
+    s3_bucket = get_required_env_var('S3_BUCKET')
+    s3_prefix = get_required_env_var('S3_PREFIX')
+    run_once = os.getenv("RUN_ONCE") == "true"
+    etcd_client_url = os.getenv("ETCD_CLIENT_URL", "http://localhost:2379")
+
+    while True:
+        logging.info("Starting etcd-backup, running backup every %s seconds.", backup_interval)
+
+        if is_leader(etcd_client_url):
+            do_backup(data_dir, s3_bucket, s3_prefix)
+
+        if run_once:
+            logging.info("RUN_ONCE enabled, exiting.")
+            break
+
+        # We want to exit before sleeping, so we check this here, not as the loop condition
+        if should_shut_down:
+            break
+        time.sleep(backup_interval)
 
 
 def do_backup(data_dir, s3_bucket, s3_prefix):
