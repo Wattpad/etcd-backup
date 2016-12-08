@@ -29,5 +29,5 @@ used by boto will work here, including environment variables and IAM instance pr
 
 ## Datadog support
 
-If you supply the appropraite environment variables, the backup script will send metrics to Datadog.  See the
+If you supply the appropriate environment variables, the backup script will send metrics to Datadog.  See the
 usage docs for more information.
