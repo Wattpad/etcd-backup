@@ -1,4 +1,4 @@
-# etcd-backup
+# etcd-backup [![Build Status](https://travis-ci.org/Wattpad/etcd-backup.svg?branch=master)](https://travis-ci.org/Wattpad/etcd-backup)
 
 etcd->S3 backup script
 
