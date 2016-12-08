@@ -35,7 +35,7 @@ services:
       - ./tmp/restore:/var/lib/etcd
 
   etcd-backup:
-    image: wattpad/etcd:latest
+    image: wattpad/etcd-backup:latest
     command: etcd-backup
     volumes:
       - ./tmp/source:/var/lib/etcd
