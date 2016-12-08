@@ -11,3 +11,12 @@ script:
   # inside the containers, so we need root access to be able to clean up at
   # the end of the tests.
   - sudo make test
+
+  # In script rather than after_success so that failures building/pushing images will show as red
+  - if [[ "$TRAVIS_PULL_REQUEST" == "false" && "$TRAVIS_BRANCH" == "master" ]] ; then
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" && make push ;
+    fi
+
+branches:
+  only:
+    - master
