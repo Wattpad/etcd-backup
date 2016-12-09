@@ -27,6 +27,11 @@ leader.
 The backup script uses boto3 under the hood, so any [authentication method](http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials)
 used by boto will work here, including environment variables and IAM instance profiles.
 
+## Host IP Detection
+
+Any host IPs that would normally default to localhost will default to the host IP when running
+in the container.  See [entrypoint.sh](entrypoint.sh).
+
 ## Datadog support
 
 If you supply the appropriate environment variables, the backup script will send metrics to Datadog.  See the
