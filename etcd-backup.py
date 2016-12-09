@@ -74,6 +74,8 @@ def main():
         # We want to exit before sleeping, so we check this here, not as the loop condition
         if should_shut_down:
             break
+
+        logging.debug('Sleeping for {} seconds'.format(backup_interval))
         time.sleep(backup_interval)
 
 
@@ -136,6 +138,7 @@ def compress_files(source_dir, file_path):
 
 
 def upload_file(bucket, key, file_path):
+    logging.debug("Uploading {} to s3://{}/".format(file_path, bucket, key))
     with open(file_path, 'rb') as f:
         boto3.resource('s3', endpoint_url=S3_ENDPOINT_URL) \
              .Object(bucket, key) \
@@ -157,6 +160,7 @@ def submit_metrics(bucket, prefix, file_size_bytes):
     if os.getenv('DOGSTATSD_METRICS_ENABLED') == 'true':
         host = os.getenv('DOGSTATSD_HOST')
         port = os.getenv('DOGSTATSD_PORT', 8125)
+        logging.debug('Submitting dogstatsd metrics to {}:{}'.format(host, port))
         statsd = datadog.dogstatsd.DogStatsd(host=host, port=port)
         statsd.increment(metric='etcd_backup.s3_upload.bytes',
                          value=file_size_bytes,
