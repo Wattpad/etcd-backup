@@ -36,11 +36,19 @@ Required env vars:
 
 Optional env vars:
   BACKUP_INTERVAL_SEC: number of seconds to wait between backup runs (default: 60)
-  DOGSTATSD_METRICS_ENABLED: as the name says (default: false)
-  ETCD_CLIENT_URL: URL for reaching etcd to detect if we are talking to the master (default: http://localhost:2379)
+  ETCD_CLIENT_URL: URL for reaching etcd to detect if we are talking to the master
   ETCD_DATA_DIR: etcd data directory  (default: /var/lib/etcd)
   LOG_LEVEL: as the name says (default: INFO)
   RUN_ONCE: if "true", run once and exit
+
+Dogstatsd settings:
+  DOGSTATSD_METRICS_ENABLED: as the name says (default: false)
+
+  If Dogstatsd metrics are enabled, the following vars are used:
+
+      DOGSTATSD_HOST
+      DOGSTATSD_PORT (default: 8125)
+
 """ % (sys.argv[0])
     print(message)
 
@@ -51,7 +59,7 @@ def main():
     s3_bucket = get_required_env_var('S3_BUCKET')
     s3_prefix = get_required_env_var('S3_PREFIX')
     run_once = os.getenv("RUN_ONCE") == "true"
-    etcd_client_url = os.getenv("ETCD_CLIENT_URL", "http://localhost:2379")
+    etcd_client_url = os.getenv("ETCD_CLIENT_URL")
 
     while True:
         logging.info("Starting etcd-backup, running backup every %s seconds.", backup_interval)
