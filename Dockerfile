@@ -14,6 +14,9 @@ RUN apk --no-cache add py-pip
 
 ENV ETCD_DATA_DIR=/var/lib/etcd
 
+COPY /entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+
 # Copy requirements.txt separately so pip install step can be cached
 COPY /requirements.txt /opt/etcd-backup/requirements.txt
 RUN pip install -r /opt/etcd-backup/requirements.txt

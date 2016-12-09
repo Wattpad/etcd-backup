@@ -36,18 +36,11 @@ Required env vars:
 
 Optional env vars:
   BACKUP_INTERVAL_SEC: number of seconds to wait between backup runs (default: 60)
+  DOGSTATSD_METRICS_ENABLED: as the name says (default: false)
   ETCD_CLIENT_URL: URL for reaching etcd to detect if we are talking to the master (default: http://localhost:2379)
   ETCD_DATA_DIR: etcd data directory  (default: /var/lib/etcd)
   LOG_LEVEL: as the name says (default: INFO)
   RUN_ONCE: if "true", run once and exit
-
-Datadog support:
-
-    If these keys are set, we will send metrics to dogstatsd.
-    See the submit_metrics method.
-
-    DOGSTATSD_HOST: Host where dogstatsd is listening (default: "")
-    DOGSTATSD_PORT: Port where dogstatsd is listening (default: 8125)
 """ % (sys.argv[0])
     print(message)
 
@@ -153,10 +146,9 @@ def get_file_md5_sum(file_path):
 
 
 def submit_metrics(bucket, prefix, file_size_bytes):
-    host = os.getenv('DOGSTATSD_HOST')
-    port = os.getenv('DOGSTATSD_PORT', 8125)
-
-    if host:
+    if os.getenv('DOGSTATSD_METRICS_ENABLED') == 'true':
+        host = os.getenv('DOGSTATSD_HOST')
+        port = os.getenv('DOGSTATSD_PORT', 8125)
         statsd = datadog.dogstatsd.DogStatsd(host=host, port=port)
         statsd.increment(metric='etcd_backup.s3_upload.bytes',
                          value=file_size_bytes,
