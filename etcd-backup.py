@@ -138,7 +138,7 @@ def compress_files(source_dir, file_path):
 
 
 def upload_file(bucket, key, file_path):
-    logging.debug("Uploading {} to s3://{}/".format(file_path, bucket, key))
+    logging.debug("Uploading {} to s3://{}/{}".format(file_path, bucket, key))
     with open(file_path, 'rb') as f:
         boto3.resource('s3', endpoint_url=S3_ENDPOINT_URL) \
              .Object(bucket, key) \
